@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.util.UUID;
 import kr.co.dglee.notify.common.domain.BaseTimeEntity;
 import kr.co.dglee.notify.event.EventStatus;
 import lombok.AccessLevel;
@@ -24,14 +25,22 @@ import lombok.NoArgsConstructor;
                 @UniqueConstraint(
                         name = "uk_events_source_idempotency_key",
                         columnNames = {"source", "idempotency_key"}
+                ),
+                @UniqueConstraint(
+                        name = "uk_events_event_key",
+                        columnNames = "event_key"
                 )
         }
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Event extends BaseTimeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "event_key", nullable = false, updatable = false)
+    private UUID eventKey;
 
     @Column(name = "idempotency_key", nullable = false, length = 200)
     private String idempotencyKey;
@@ -49,4 +58,15 @@ public class Event extends BaseTimeEntity {
     @Lob
     @Column(nullable = false)
     private String payload;
+
+    public static Event receive(String source, String eventType, String idempotencyKey, String payload) {
+        Event event = new Event();
+        event.eventKey = UUID.randomUUID();
+        event.idempotencyKey = idempotencyKey;
+        event.source = source;
+        event.eventType = eventType;
+        event.status = EventStatus.RECEIVED;
+        event.payload = payload;
+        return event;
+    }
 }
