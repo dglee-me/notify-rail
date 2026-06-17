@@ -64,10 +64,15 @@ public class DeliveryRequest extends BaseTimeEntity {
     public static DeliveryRequest queue(Event event, DeliveryChannel channel, String target) {
         DeliveryRequest request = new DeliveryRequest();
         request.event = event;
-        request.status = DeliveryStatus.QUEUED;
+        request.status = DeliveryStatus.PENDING;
         request.channel = channel;
         request.target = target;
 
         return request;
+    }
+
+    public void markQueuePublished(LocalDateTime publishedAt) {
+        this.status = DeliveryStatus.QUEUED;
+        this.queuePublishedAt = publishedAt;
     }
 }
