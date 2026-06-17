@@ -2,8 +2,6 @@ package kr.co.dglee.notify.event.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,7 +10,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.util.UUID;
 import kr.co.dglee.notify.common.domain.BaseTimeEntity;
-import kr.co.dglee.notify.event.EventStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,10 +48,6 @@ public class Event extends BaseTimeEntity {
     @Column(name = "event_type", nullable = false, length = 100)
     private String eventType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
-    private EventStatus status;
-
     @Lob
     @Column(nullable = false)
     private String payload;
@@ -65,7 +58,6 @@ public class Event extends BaseTimeEntity {
         event.idempotencyKey = idempotencyKey;
         event.source = source;
         event.eventType = eventType;
-        event.status = EventStatus.RECEIVED;
         event.payload = payload;
         return event;
     }

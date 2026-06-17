@@ -1,6 +1,8 @@
 package kr.co.dglee.notify.event.service;
 
 import java.util.Optional;
+import kr.co.dglee.notify.delivery.entity.DeliveryRequest;
+import kr.co.dglee.notify.delivery.repository.DeliveryRequestRepository;
 import kr.co.dglee.notify.event.dto.EventCreateRequest;
 import kr.co.dglee.notify.event.entity.Event;
 import kr.co.dglee.notify.event.repository.EventRepository;
@@ -15,6 +17,8 @@ import tools.jackson.databind.ObjectMapper;
 public class EventService {
 
     private final EventRepository eventRepository;
+    private final DeliveryRequestRepository deliveryRequestRepository;
+
     private final ObjectMapper objectMapper;
 
     @Transactional
@@ -25,8 +29,19 @@ public class EventService {
             return existEvent.get();
         }
 
-        Event event = Event.receive(createRequest.source(), createRequest.eventType(), createRequest.idempotencyKey(),
+        Event event = Event.receive(
+                createRequest.source(),
+                createRequest.eventType(),
+                createRequest.idempotencyKey(),
                 objectMapper.writeValueAsString(createRequest.payload()));
-        return eventRepository.save(event);
+        eventRepository.save(event);
+
+        deliveryRequestRepository.saveAll(
+                createRequest.recipients()
+                        .stream()
+                        .map(recipient -> DeliveryRequest.queue(event, recipient.channel(), recipient.target()))
+                        .toList()
+        );
+        return event;
     }
 }
