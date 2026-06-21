@@ -1,4 +1,4 @@
-package kr.co.dglee.notify.event.dto;
+package kr.co.dglee.notify.api.event.dto;
 
 import java.util.UUID;
 import kr.co.dglee.notify.domain.event.entity.Event;

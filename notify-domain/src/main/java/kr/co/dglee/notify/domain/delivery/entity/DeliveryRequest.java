@@ -75,4 +75,12 @@ public class DeliveryRequest extends BaseTimeEntity {
         this.status = DeliveryStatus.QUEUED;
         this.queuePublishedAt = publishedAt;
     }
+
+    public void markDelivering() {
+        this.status = DeliveryStatus.DELIVERING;
+    }
+
+    public void markDelivered() {
+        this.status = DeliveryStatus.DELIVERED;
+    }
 }

@@ -1,4 +1,4 @@
-package kr.co.dglee.notify.delivery.repository;
+package kr.co.dglee.notify.worker.delivery.repository;
 
 import java.util.List;
 import kr.co.dglee.notify.domain.delivery.DeliveryStatus;

@@ -1,4 +1,4 @@
-package kr.co.dglee.notify.delivery.queue;
+package kr.co.dglee.notify.api.delivery.queue;
 
 import kr.co.dglee.notify.domain.delivery.entity.DeliveryRequest;
 

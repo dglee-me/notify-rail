@@ -1,10 +1,10 @@
-package kr.co.dglee.notify.event.controller;
+package kr.co.dglee.notify.api.event.controller;
 
 import jakarta.validation.Valid;
-import kr.co.dglee.notify.event.dto.EventCreateRequest;
-import kr.co.dglee.notify.event.dto.EventCreateResponse;
+import kr.co.dglee.notify.api.event.dto.EventCreateRequest;
+import kr.co.dglee.notify.api.event.dto.EventCreateResponse;
 import kr.co.dglee.notify.domain.event.entity.Event;
-import kr.co.dglee.notify.event.service.EventService;
+import kr.co.dglee.notify.api.event.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

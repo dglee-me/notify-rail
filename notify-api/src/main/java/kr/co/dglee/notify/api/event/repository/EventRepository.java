@@ -1,4 +1,4 @@
-package kr.co.dglee.notify.event.repository;
+package kr.co.dglee.notify.api.event.repository;
 
 import java.util.Optional;
 import kr.co.dglee.notify.domain.event.entity.Event;

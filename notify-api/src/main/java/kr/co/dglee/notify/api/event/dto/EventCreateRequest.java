@@ -1,4 +1,4 @@
-package kr.co.dglee.notify.event.dto;
+package kr.co.dglee.notify.api.event.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;

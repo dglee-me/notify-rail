@@ -1,4 +1,4 @@
-package kr.co.dglee.notify.error;
+package kr.co.dglee.notify.api.error;
 
 import java.util.List;
 

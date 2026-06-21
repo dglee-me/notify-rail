@@ -1,7 +1,7 @@
-package kr.co.dglee.notify.delivery.job;
+package kr.co.dglee.notify.api.delivery.job;
 
-import kr.co.dglee.notify.delivery.queue.DeliveryQueuePublisher;
-import kr.co.dglee.notify.delivery.repository.DeliveryRequestRepository;
+import kr.co.dglee.notify.api.delivery.queue.DeliveryQueuePublisher;
+import kr.co.dglee.notify.api.delivery.repository.DeliveryRequestRepository;
 import kr.co.dglee.notify.domain.delivery.DeliveryStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
