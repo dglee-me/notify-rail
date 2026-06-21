@@ -1,0 +1,18 @@
+name: notify-rail
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: notify-rail-mysql
+    environment:
+      MYSQL_DATABASE: notify_rail
+      MYSQL_USER: notify
+      MYSQL_PASSWORD: notify
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "13306:3306"
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
