@@ -1,4 +1,7 @@
 rootProject.name = 'notify-rail'
 
-include 'notify-api'
+// 공통 모듈
 include 'notify-domain'
+
+include 'notify-api'
+include 'notify-worker'

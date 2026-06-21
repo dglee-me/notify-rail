@@ -8,10 +8,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableJpaAuditing
 @SpringBootApplication
-public class NotifyRailApplication {
+public class NotifyWorkerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(NotifyRailApplication.class, args);
+        SpringApplication.run(NotifyWorkerApplication.class, args);
     }
-
 }
