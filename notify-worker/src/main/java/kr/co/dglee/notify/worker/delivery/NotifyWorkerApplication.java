@@ -1,4 +1,4 @@
-package kr.co.dglee.notify.worker;
+package kr.co.dglee.notify.worker.delivery;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

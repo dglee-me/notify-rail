@@ -74,10 +74,26 @@ public class DeliveryRequest extends BaseTimeEntity {
     public void markQueuePublished(LocalDateTime publishedAt) {
         this.status = DeliveryStatus.QUEUED;
         this.queuePublishedAt = publishedAt;
+        this.nextAttemptAt = null;
     }
 
     public void markDelivering() {
         this.status = DeliveryStatus.DELIVERING;
+        this.attemptCount++;
+    }
+
+    public boolean canRetry() {
+        return attemptCount < 3;
+    }
+
+    public void markRetry(LocalDateTime nextAttemptAt) {
+        this.status = DeliveryStatus.RETRY;
+        this.nextAttemptAt = nextAttemptAt;
+    }
+
+    public void markDeadLettered() {
+        this.status = DeliveryStatus.DEAD_LETTERED;
+        this.nextAttemptAt = null;
     }
 
     public void markDelivered() {
