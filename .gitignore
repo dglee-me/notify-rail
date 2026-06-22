@@ -37,3 +37,7 @@ out/
 .vscode/
 
 docker/data/
+
+.env
+.env.*
+!.env.example

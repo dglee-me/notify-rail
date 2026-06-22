@@ -12,3 +12,13 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+  mail:
+    properties:
+      mail:
+        debug: false      # SMTP 디버그 로그 (필요 시에만 활성화)
+        debug.auth: false # SMTP 인증 디버그 로그 비활성화
+
+logging:
+  level:
+    org.springframework.mail: DEBUG
