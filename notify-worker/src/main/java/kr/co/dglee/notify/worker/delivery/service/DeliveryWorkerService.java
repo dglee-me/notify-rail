@@ -26,7 +26,7 @@ public class DeliveryWorkerService {
 
     @Transactional
     public DeliveryRequest markDelivering(Long id) {
-        DeliveryRequest request = deliveryRequestRepository.findById(id).orElseThrow();
+        DeliveryRequest request = deliveryRequestRepository.findWithEventById(id).orElseThrow();
         request.markDelivering();
 
         return request;

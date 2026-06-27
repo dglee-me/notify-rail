@@ -13,3 +13,9 @@ spring:
           auth: true
           starttls:
             enable: true
+
+  http:
+    clients:
+      connect-timeout: 3s
+      read-timeout: 5s
+      redirects: dont_follow

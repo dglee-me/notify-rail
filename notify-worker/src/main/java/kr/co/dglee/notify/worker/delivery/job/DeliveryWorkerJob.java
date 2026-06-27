@@ -1,5 +1,6 @@
 package kr.co.dglee.notify.worker.delivery.job;
 
+import java.net.URI;
 import kr.co.dglee.notify.domain.delivery.DeliveryChannel;
 import kr.co.dglee.notify.domain.delivery.entity.DeliveryRequest;
 import kr.co.dglee.notify.worker.delivery.processor.DeliveryProcessor;
@@ -44,12 +45,14 @@ public class DeliveryWorkerJob {
     }
 
     private String maskTarget(DeliveryChannel channel, String target) {
-        switch (channel) {
-            case EMAIL:
-                return maskEmailTarget(target);
-            default:
-                return "***";
+        if (channel == null) {
+            return "***";
         }
+
+        return switch (channel) {
+            case EMAIL -> maskEmailTarget(target);
+            case WEBHOOK -> maskWebhookTarget(target);
+        };
     }
 
     private String maskEmailTarget(String target) {
@@ -70,5 +73,25 @@ public class DeliveryWorkerJob {
         }
 
         return localPart.substring(0, 2) + "***@" + domain;
+    }
+
+    private String maskWebhookTarget(String target) {
+        if (target == null || target.isBlank()) {
+            return "***";
+        }
+
+        try {
+            URI uri = URI.create(target);
+            String scheme = uri.getScheme();
+            String host = uri.getHost();
+
+            if (scheme == null || scheme.isBlank() || host == null || host.isBlank()) {
+                return "***";
+            }
+
+            return scheme + "://" + host + "/...";
+        } catch (IllegalArgumentException e) {
+            return "***";
+        }
     }
 }
