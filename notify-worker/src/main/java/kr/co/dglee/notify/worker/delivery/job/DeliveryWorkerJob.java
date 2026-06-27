@@ -1,6 +1,7 @@
 package kr.co.dglee.notify.worker.delivery.job;
 
 import java.net.URI;
+import java.util.concurrent.Executor;
 import kr.co.dglee.notify.domain.delivery.DeliveryChannel;
 import kr.co.dglee.notify.domain.delivery.entity.DeliveryRequest;
 import kr.co.dglee.notify.worker.delivery.processor.DeliveryProcessor;
@@ -19,16 +20,18 @@ public class DeliveryWorkerJob {
 
     private final DeliveryProcessor processor;
 
+    private final Executor deliveryExecutor;
+
     @Scheduled(fixedDelay = 1000)
     public void consumeDeliveryRequests() {
         // 큐 처리 (QUEUED)
         deliveryWorkerService
                 .findQueuedRequests()
-                .forEach(this::delivery);
+                .forEach(request -> deliveryExecutor.execute(() -> delivery(request.getId())));
     }
 
-    private void delivery(DeliveryRequest request) {
-        DeliveryRequest targetRequest = deliveryWorkerService.markDelivering(request.getId());
+    private void delivery(Long id) {
+        DeliveryRequest targetRequest = deliveryWorkerService.markDelivering(id);
 
         try {
             processor.process(targetRequest);
@@ -39,8 +42,8 @@ public class DeliveryWorkerJob {
                     targetRequest.getChannel(),
                     maskTarget(targetRequest.getChannel(), targetRequest.getTarget()));
         } catch (Exception e) {
-            deliveryWorkerService.markFailed(request.getId());
-            log.error("Failed to process delivery request with ID: {}", request.getId(), e);
+            deliveryWorkerService.markFailed(id);
+            log.error("Failed to process delivery request with ID: {}", id, e);
         }
     }
 
