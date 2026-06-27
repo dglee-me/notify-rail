@@ -15,14 +15,14 @@ import tools.jackson.databind.ObjectMapper;
 
 @Component
 @RequiredArgsConstructor
-public class WebhookSender implements Sender {
+public class SlackSender implements Sender {
 
     private final RestClient webhookRestClient;
     private final ObjectMapper objectMapper;
 
     @Override
     public boolean isSupport(DeliveryChannel channel) {
-        return DeliveryChannel.WEBHOOK.equals(channel);
+        return DeliveryChannel.SLACK.equals(channel);
     }
 
     @Override

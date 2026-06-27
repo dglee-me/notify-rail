@@ -54,7 +54,7 @@ public class DeliveryWorkerJob {
 
         return switch (channel) {
             case EMAIL -> maskEmailTarget(target);
-            case WEBHOOK -> maskWebhookTarget(target);
+            case SLACK -> maskSlackTarget(target);
         };
     }
 
@@ -78,7 +78,7 @@ public class DeliveryWorkerJob {
         return localPart.substring(0, 2) + "***@" + domain;
     }
 
-    private String maskWebhookTarget(String target) {
+    private String maskSlackTarget(String target) {
         if (target == null || target.isBlank()) {
             return "***";
         }
