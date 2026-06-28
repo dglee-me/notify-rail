@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.concurrent.Executor;
 import kr.co.dglee.notify.domain.delivery.DeliveryChannel;
 import kr.co.dglee.notify.domain.delivery.entity.DeliveryRequest;
+import kr.co.dglee.notify.domain.delivery.validation.DeliveryTargetValidationException;
 import kr.co.dglee.notify.worker.delivery.processor.DeliveryProcessor;
 import kr.co.dglee.notify.worker.delivery.service.DeliveryWorkerService;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,13 @@ public class DeliveryWorkerJob {
                     targetRequest.getId(),
                     targetRequest.getChannel(),
                     maskTarget(targetRequest.getChannel(), targetRequest.getTarget()));
+        } catch (DeliveryTargetValidationException e) {
+            deliveryWorkerService.markDeadLettered(id);
+            log.warn("Delivery target validation failed. deliveryRequestId={}, channel={}, target={}, reason={}",
+                    id,
+                    targetRequest.getChannel(),
+                    maskTarget(targetRequest.getChannel(), targetRequest.getTarget()),
+                    e.getMessage());
         } catch (Exception e) {
             deliveryWorkerService.markFailed(id);
             log.error("Failed to process delivery request with ID: {}", id, e);

@@ -55,4 +55,10 @@ public class DeliveryWorkerService {
 
         log.error("Delivery request {} has failed and moved to dead letter queue.", id);
     }
+
+    @Transactional
+    public void markDeadLettered(Long id) {
+        DeliveryRequest request = deliveryRequestRepository.findById(id).orElseThrow();
+        request.markDeadLettered();
+    }
 }

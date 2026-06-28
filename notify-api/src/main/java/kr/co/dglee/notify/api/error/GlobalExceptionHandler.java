@@ -1,6 +1,7 @@
 package kr.co.dglee.notify.api.error;
 
 import java.util.List;
+import kr.co.dglee.notify.domain.delivery.validation.DeliveryTargetValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,5 +21,15 @@ public class GlobalExceptionHandler {
                 .toList();
 
         return new ApiErrorResponse("VALIDATION_FAILED", "Request validation failed", errors);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(DeliveryTargetValidationException.class)
+    public ApiErrorResponse handleDeliveryTargetValidationException(DeliveryTargetValidationException exception) {
+        return new ApiErrorResponse(
+                "INVALID_DELIVERY_TARGET",
+                exception.getMessage(),
+                List.of()
+        );
     }
 }
