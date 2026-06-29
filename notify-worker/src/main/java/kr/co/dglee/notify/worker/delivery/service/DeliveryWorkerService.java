@@ -53,7 +53,7 @@ public class DeliveryWorkerService {
         // 재시도가 불가능하다면 DEAD_LETTER 처리
         request.markDeadLettered();
 
-        log.error("Delivery request {} has failed and moved to dead letter queue.", id);
+        log.warn("Delivery request {} has failed and moved to dead letter queue.", id);
     }
 
     @Transactional

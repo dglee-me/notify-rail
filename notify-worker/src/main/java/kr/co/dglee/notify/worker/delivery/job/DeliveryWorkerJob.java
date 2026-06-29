@@ -51,7 +51,11 @@ public class DeliveryWorkerJob {
                     e.getMessage());
         } catch (Exception e) {
             deliveryWorkerService.markFailed(id);
-            log.error("Failed to process delivery request with ID: {}", id, e);
+            log.warn("Delivery request failed. deliveryRequestId={}, channel={}, target={}, errorType={}",
+                    id,
+                    targetRequest.getChannel(),
+                    maskTarget(targetRequest.getChannel(), targetRequest.getTarget()),
+                    e.getClass().getSimpleName());
         }
     }
 
