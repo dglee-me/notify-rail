@@ -5,6 +5,12 @@ spring:
     username: notify
     password: notify
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: notify
+    password: notify
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -13,3 +19,11 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
+
+notify:
+  queue:
+    type: rabbitmq
+  rabbitmq:
+    delivery-exchange: notify.delivery.exchange
+    delivery-queue: notify.delivery.queue
+    delivery-routing-key: delivery.requested

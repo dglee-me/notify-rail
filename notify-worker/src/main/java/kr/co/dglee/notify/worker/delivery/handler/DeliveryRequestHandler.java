@@ -1,7 +1,7 @@
-package kr.co.dglee.notify.worker.delivery.job;
+package kr.co.dglee.notify.worker.delivery.handler;
 
 import java.net.URI;
-import java.util.concurrent.Executor;
+import java.util.Optional;
 import kr.co.dglee.notify.domain.delivery.DeliveryChannel;
 import kr.co.dglee.notify.domain.delivery.entity.DeliveryRequest;
 import kr.co.dglee.notify.domain.delivery.validation.DeliveryTargetValidationException;
@@ -9,30 +9,23 @@ import kr.co.dglee.notify.worker.delivery.processor.DeliveryProcessor;
 import kr.co.dglee.notify.worker.delivery.service.DeliveryWorkerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DeliveryWorkerJob {
+public class DeliveryRequestHandler {
 
     private final DeliveryWorkerService deliveryWorkerService;
-
     private final DeliveryProcessor processor;
 
-    private final Executor deliveryExecutor;
+    public void handle(Long deliveryRequestId) {
+        Optional<DeliveryRequest> optionalRequest = deliveryWorkerService.markDeliveringIfQueued(deliveryRequestId);
+        if (optionalRequest.isEmpty()) {
+            return;
+        }
 
-    @Scheduled(fixedDelay = 1000)
-    public void consumeDeliveryRequests() {
-        // 큐 처리 (QUEUED)
-        deliveryWorkerService
-                .findQueuedRequests()
-                .forEach(request -> deliveryExecutor.execute(() -> delivery(request.getId())));
-    }
-
-    private void delivery(Long id) {
-        DeliveryRequest targetRequest = deliveryWorkerService.markDelivering(id);
+        DeliveryRequest targetRequest = optionalRequest.get();
 
         try {
             processor.process(targetRequest);
@@ -43,16 +36,16 @@ public class DeliveryWorkerJob {
                     targetRequest.getChannel(),
                     maskTarget(targetRequest.getChannel(), targetRequest.getTarget()));
         } catch (DeliveryTargetValidationException e) {
-            deliveryWorkerService.markDeadLettered(id);
+            deliveryWorkerService.markDeadLettered(deliveryRequestId);
             log.warn("Delivery target validation failed. deliveryRequestId={}, channel={}, target={}, reason={}",
-                    id,
+                    deliveryRequestId,
                     targetRequest.getChannel(),
                     maskTarget(targetRequest.getChannel(), targetRequest.getTarget()),
                     e.getMessage());
         } catch (Exception e) {
-            deliveryWorkerService.markFailed(id);
+            deliveryWorkerService.markFailed(deliveryRequestId);
             log.warn("Delivery request failed. deliveryRequestId={}, channel={}, target={}, errorType={}",
-                    id,
+                    deliveryRequestId,
                     targetRequest.getChannel(),
                     maskTarget(targetRequest.getChannel(), targetRequest.getTarget()),
                     e.getClass().getSimpleName());

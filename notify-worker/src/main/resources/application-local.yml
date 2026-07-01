@@ -5,6 +5,12 @@ spring:
     username: notify
     password: notify
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: notify
+    password: notify
+
   jpa:
     hibernate:
       ddl-auto: validate
@@ -18,6 +24,14 @@ spring:
       mail:
         debug: false      # SMTP 디버그 로그 (필요 시에만 활성화)
         debug.auth: false # SMTP 인증 디버그 로그 비활성화
+
+notify:
+  queue:
+    type: rabbitmq
+  rabbitmq:
+    delivery-exchange: notify.delivery.exchange
+    delivery-queue: notify.delivery.queue
+    delivery-routing-key: delivery.requested
 
 logging:
   level:

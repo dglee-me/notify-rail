@@ -2,6 +2,7 @@ package kr.co.dglee.notify.worker.delivery.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import kr.co.dglee.notify.domain.delivery.DeliveryStatus;
 import kr.co.dglee.notify.domain.delivery.entity.DeliveryRequest;
 import kr.co.dglee.notify.worker.delivery.repository.DeliveryRequestRepository;
@@ -25,11 +26,15 @@ public class DeliveryWorkerService {
     }
 
     @Transactional
-    public DeliveryRequest markDelivering(Long id) {
+    public Optional<DeliveryRequest> markDeliveringIfQueued(Long id) {
         DeliveryRequest request = deliveryRequestRepository.findWithEventById(id).orElseThrow();
+        if (request.getStatus() != DeliveryStatus.QUEUED) {
+            return Optional.empty();
+        }
+
         request.markDelivering();
 
-        return request;
+        return Optional.of(request);
     }
 
     @Transactional
